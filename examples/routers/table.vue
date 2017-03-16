@@ -1,5 +1,10 @@
 <template>
-    <i-table border :content="self" :columns="columns7" :data="data6"></i-table>
+    <Table border :content="self" :columns="columns7" :data="data6">
+        <template scope="row">
+            <span>hello from parent</span>
+            <span>{{ row.address }}</span>
+        </template>
+    </Table>
 </template>
 <script>
     export default {

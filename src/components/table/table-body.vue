@@ -4,27 +4,33 @@
             <col v-for="(column, index) in columns" :width="setCellWidth(column, index, false)">
         </colgroup>
         <tbody :class="[prefixCls + '-tbody']">
-            <tr
-                v-for="(row, index) in data"
-                :key="row"
+            <template
+                 v-for="(row, index) in data"
                 :class="rowClasses(row._index)"
                 @mouseenter.stop="handleMouseIn(row._index)"
                 @mouseleave.stop="handleMouseOut(row._index)"
                 @click.stop="clickCurrentRow(row._index)"
                 @dblclick.stop="dblclickCurrentRow(row._index)">
-                <td v-for="column in columns" :class="alignCls(column, row)">
-                    <Cell
-                        :fixed="fixed"
-                        :prefix-cls="prefixCls"
-                        :row="row"
-                        :column="column"
-                        :natural-index="index"
-                        :index="row._index"
-                        :checked="rowChecked(row._index)"
-                        :disabled="rowDisabled(row._index)"
-                        ></Cell>
-                </td>
-            </tr>
+                <tr>
+                    <td v-for="column in columns" :class="alignCls(column, row)">
+                        <Cell
+                            :fixed="fixed"
+                            :prefix-cls="prefixCls"
+                            :row="row"
+                            :column="column"
+                            :natural-index="index"
+                            :index="row._index"
+                            :checked="rowChecked(row._index)"
+                            :disabled="rowDisabled(row._index)"
+                            ></Cell>
+                    </td>
+                </tr>
+                <tr>
+                   <td :colspan="columns.length">
+                        <row-expand :row="row"></row-expand>
+                   </td>
+                </tr>
+            </template>
         </tbody>
     </table>
 </template>
@@ -32,11 +38,12 @@
     // todo :key="row"
     import Cell from './cell.vue';
     import Mixin from './mixin';
+    import RowExpand from './row-expand.vue';
 
     export default {
         name: 'TableBody',
         mixins: [ Mixin ],
-        components: { Cell },
+        components: { Cell, RowExpand },
         props: {
             prefixCls: String,
             styleObject: Object,
