@@ -363,6 +363,7 @@
             },
             clickCurrentRow (_index) {
                 this.highlightCurrentRow (_index);
+		this.toggleExpandRow(_index);
                 this.$emit('on-row-click', JSON.parse(JSON.stringify(this.cloneData[_index])));
             },
             dblclickCurrentRow (_index) {
@@ -416,6 +417,9 @@
                 }
                 this.$emit('on-selection-change', selection);
             },
+	    toggleExpandRow(_index) {
+		this.objData[_index]._isExpandEnable = !this.objData[_index]._isExpandEnable;
+	    },
             fixedHeader () {
                 if (this.height) {
                     this.$nextTick(() => {
@@ -563,6 +567,7 @@
                 this.data.forEach((row, index) => {
                     const newRow = deepCopy(row);// todo 直接替换
                     newRow._isHover = false;
+		    newRow._isExpandEnable = false;
                     if(newRow._disabled){
                         newRow._isDisabled = newRow._disabled;
                     }else{

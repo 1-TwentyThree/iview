@@ -4,14 +4,13 @@
             <col v-for="(column, index) in columns" :width="setCellWidth(column, index, false)">
         </colgroup>
         <tbody :class="[prefixCls + '-tbody']">
-            <template
-                 v-for="(row, index) in data"
-                :class="rowClasses(row._index)"
-                @mouseenter.stop="handleMouseIn(row._index)"
-                @mouseleave.stop="handleMouseOut(row._index)"
-                @click.stop="clickCurrentRow(row._index)"
-                @dblclick.stop="dblclickCurrentRow(row._index)">
-                <tr>
+            <template v-for="(row, index) in data">
+                <tr
+		:class="rowClasses(row._index)"
+		@mouseenter.stop="handleMouseIn(row._index)"
+		@mouseleave.stop="handleMouseOut(row._index)"
+		@click.stop="clickCurrentRow(row._index)"
+		@dblclick.stop="dblclickCurrentRow(row._index)">
                     <td v-for="column in columns" :class="alignCls(column, row)">
                         <Cell
                             :fixed="fixed"
@@ -25,11 +24,9 @@
                             ></Cell>
                     </td>
                 </tr>
-                <tr>
-                   <td :colspan="columns.length">
-                        <row-expand :row="row"></row-expand>
-                   </td>
-                </tr>
+		<template v-if="hasExpandSlot">
+			<row-expand :enable="rowExpandEnable(row._index)" :columns="columns" :row="row"></row-expand>
+		</template>
             </template>
         </tbody>
     </table>
@@ -56,6 +53,21 @@
                 default: false
             }
         },
+	computed: {
+            table() {
+                let parent = this.$parent;
+                while (parent && parent.$options.name !== 'Table') {
+                    parent = parent.$parent;
+                }
+                return parent;
+            },
+	    expandSlot() {
+		return this.table.$scopedSlots['expand'];
+	    },
+	    hasExpandSlot() {
+		return this.expandSlot != null;
+	    },
+	},
         methods: {
             rowClasses (_index) {
                 return [
@@ -73,6 +85,9 @@
             rowDisabled(_index){
                 return this.objData[_index] && this.objData[_index]._isDisabled;
             },
+	    rowExpandEnable(_index) {
+                return this.objData[_index] && this.objData[_index]._isExpandEnable;
+	    },
             rowClsName (_index) {
                 return this.$parent.rowClassName(this.objData[_index], _index);
             },

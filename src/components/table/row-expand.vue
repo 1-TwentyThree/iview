@@ -1,19 +1,14 @@
 <script>
     export default {
         name: 'RowExpand',
-        props: ['row'],
-        computed: {
-            owner() {
-                let parent = this.$parent;
-                while (parent && parent.$options.name !== 'Table') {
-                    parent = parent.$parent;
-                }
-                return parent;
-            }
-        },
+        props: ['row', 'columns', 'enable'],
         render(createElement) {
-            let _slot = this.owner.$scopedSlots.default ? this.owner.$scopedSlots.default(this.row) : this.owner.$slots.default;
-            return createElement('div', _slot);
+	    if (this.enable) {
+                let _slot = this.$parent.expandSlot(this.row);
+	    	return createElement('tr', [createElement('td', {attrs: {colspan: this.columns.length}}, _slot)]);
+	    } else {
+		return '';
+	    }
         }
     }    
 </script>

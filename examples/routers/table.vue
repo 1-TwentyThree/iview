@@ -1,6 +1,6 @@
 <template>
     <Table border :content="self" :columns="columns7" :data="data6">
-        <template scope="row">
+        <template slot="expand" scope="row">
             <span>hello from parent</span>
             <span>{{ row.address }}</span>
         </template>
